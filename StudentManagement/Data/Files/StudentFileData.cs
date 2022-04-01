@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
+using StudentManagement.Interfaces.IData;
 using StudentManagement.Models;
 using System.Collections.Generic;
 using System.IO;
 
 namespace StudentManagement.Data
 {
-    internal class StudentFileData
+    internal class StudentFileData : IStudentData
     {
         private string _folderPath;
         private string _filePath;

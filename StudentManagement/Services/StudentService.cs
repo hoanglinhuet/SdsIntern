@@ -1,4 +1,6 @@
 ﻿using StudentManagement.Data;
+using StudentManagement.Interfaces.IData;
+using StudentManagement.Interfaces.IServices;
 using StudentManagement.Models;
 using StudentManagement.Utilities;
 using System;
@@ -6,16 +8,16 @@ using System.Collections.Generic;
 
 namespace StudentManagement.Services
 {
-    internal class StudentService
+    internal class StudentService : IStudentService
     {
-        private StudentFileData _da;
-        public StudentService()
+        private readonly IStudentData _studentData;
+        public StudentService(IStudentData studentData)
         {
-            _da = new StudentFileData();
+            _studentData = studentData;
         }
         public List<Student> GetAll()
         {
-            return _da.GetAll();
+            return _studentData.GetAll();
         }
 
         public Student Create()
@@ -27,7 +29,7 @@ namespace StudentManagement.Services
             student.Name = Console.ReadLine();
             Console.Write("Age: ");
             student.Age = Convert.ToInt32(Console.ReadLine());
-            _da.Add(student);
+            _studentData.Add(student);
             return student;
         }
 

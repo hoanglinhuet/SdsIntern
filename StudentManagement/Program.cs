@@ -1,4 +1,9 @@
-﻿using StudentManagement.Models;
+﻿using Castle.MicroKernel.Registration;
+using Castle.Windsor;
+using StudentManagement.Data.Dapper;
+using StudentManagement.Interfaces.IData;
+using StudentManagement.Interfaces.IServices;
+using StudentManagement.Models;
 using StudentManagement.Services;
 using System;
 using System.Collections.Generic;
@@ -10,11 +15,17 @@ namespace StudentManagement
     {
         static void Main(string[] args)
         {
+            var container = new WindsorContainer();
             try
             {
                 Console.OutputEncoding = Encoding.Unicode;
+                string connectionString = "test";
+                container.Register(Component.For<IStudentService>().ImplementedBy<StudentService>(),
+                                   //Component.For<IStudentData>().ImplementedBy<StudentFileData>()
+                                   Component.For<IStudentData>().ImplementedBy<StudentDapperData>().DependsOn(Dependency.OnValue("connectionString", connectionString))
+                                   );
                 //Console.InputEncoding = Encoding.UTF8;
-                StudentService studentService = new StudentService();
+                var studentService = container.Resolve<IStudentService>();
                 List<Student> students = studentService.GetAll();
                 while (true)
                 {
@@ -37,7 +48,16 @@ namespace StudentManagement
             {
                 Console.WriteLine("Lỗi cmnr: " + ex.Message);
             }
+            finally
+            {
+                container.Dispose();
+            }
             Console.ReadLine();
+        }
+
+        static void Init()
+        {
+
         }
     }
 }
